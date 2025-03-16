@@ -77,7 +77,7 @@ async function setupGradioClient() {
                 const result = await client.predict("/swap_hair", { 
                     face: sourceImage,
                     shape: targetImage,
-                    color: null,
+                    color: sourceImage,
                     blending: "Article",
                     poisson_iters: 0,
                     poisson_erosion: 1,
