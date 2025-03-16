@@ -53,6 +53,118 @@ function handleHairstyleSelection() {
     });
 }
 
+// Handle image upload
+async function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        // Show loading
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'loading';
+        loadingDiv.textContent = 'Processing upload...';
+        document.querySelector('.upload-section').appendChild(loadingDiv);
+
+        // Preview uploaded image
+        const preview = document.querySelector('#uploadPreview img');
+        preview.style.display = 'block';
+        preview.src = URL.createObjectURL(file);
+
+        // Process with API
+        const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js");
+        const client = await Client.connect("AIRI-Institute/HairFastGAN");
+        
+        const upresult = await client.predict("/resize_inner", { 
+            img: file,
+            align: ["Face"],
+        });
+        console.log("hello world");
+        console.log(upresult);
+
+        // Update source image with processed result
+        const sourceImage = document.querySelector('.main-section .photo-container img');
+        sourceImage.src = upresult.data[0].url;
+        
+        document.querySelector('.loading').remove();
+    } catch (error) {
+        console.error('Error processing upload:', error);
+        alert('Error processing image. Please try again.');
+        document.querySelector('.loading')?.remove();
+    }
+}
+
+async function processImageInput(input) {
+    try {
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'loading';
+        loadingDiv.textContent = 'Processing...';
+        document.querySelector('.upload-section').appendChild(loadingDiv);
+
+        let file;
+        if (typeof input === 'string') {
+            // Handle URL
+            const response = await fetch(input);
+            file = await response.blob();
+        } else {
+            // Handle File object
+            file = input;
+        }
+
+        // Preview image
+        const preview = document.querySelector('#uploadPreview img');
+        preview.style.display = 'block';
+        preview.src = URL.createObjectURL(file);
+        preview.parentElement.classList.add('has-image');
+
+        // Process with API
+        const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js");
+        const client = await Client.connect("AIRI-Institute/HairFastGAN");
+        
+        const loadresult = await client.predict("/resize_inner", { 
+            img: file,
+            align: ["Face"],
+        });
+        console.log(loadresult);
+
+        // Update source image
+        const sourceImage = document.querySelector('.main-section .photo-container img');
+        sourceImage.src = loadresult.data[0].url;
+        
+        document.querySelector('.loading').remove();
+    } catch (error) {
+        console.error('Error processing image:', error);
+        alert('Error processing image. Please try again.');
+        document.querySelector('.loading')?.remove();
+    }
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('dragover');
+}
+
+function handleDragLeave(e) {
+    e.currentTarget.classList.remove('dragover');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('dragover');
+
+    // Handle URL drops
+    const text = e.dataTransfer.getData('text');
+    if (text && text.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i)) {
+        processImageInput(text);
+        return;
+    }
+
+    // Handle file drops
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        processImageInput(file);
+    }
+}
+
 // Initialize gradio client and handle API calls
 async function setupGradioClient() {
     try {
@@ -110,6 +222,18 @@ function initializeApp() {
         selectedHairstyleImg.src = firstOptionImg.src;
         selectedHairstyleUrl = firstOptionImg.src;
     }
+    
+    // Add upload handler
+    document.getElementById('imageUpload').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) processImageInput(file);
+    });
+
+    // Add drag and drop handlers
+    const dropZone = document.getElementById('uploadPreview');
+    dropZone.addEventListener('dragover', handleDragOver);
+    dropZone.addEventListener('dragleave', handleDragLeave);
+    dropZone.addEventListener('drop', handleDrop);
 }
 
 setupGradioClient().catch(console.error);

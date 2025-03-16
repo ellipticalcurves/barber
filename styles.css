@@ -120,6 +120,70 @@ h3 {
     z-index: 1000;
 }
 
+.upload-section {
+    background: #2d2d2d;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.upload-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.upload-button {
+    background: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.upload-button:hover {
+    background: #45a049;
+}
+
+.preview-container {
+    flex: 1;
+    max-width: 200px;
+    height: 200px;
+    border: 2px dashed #444;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.preview-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.preview-container.dragover {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.preview-container::after {
+    content: 'Drag & drop image or URL here';
+    color: #666;
+    position: absolute;
+    pointer-events: none;
+}
+
+.preview-container.has-image::after {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
