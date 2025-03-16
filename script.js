@@ -7,6 +7,10 @@ const hairstyles = {
     style2: {
         url: "7.png",
         alt: "Hairstyle 2"
+    },
+    style3: {
+        url: "fade.png",
+        alt: "Hairstyle 3",
     }
     // Add more hairstyles here
 };
