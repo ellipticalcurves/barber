@@ -52,7 +52,7 @@ function handleHairstyleSelection() {
 // Initialize gradio client and handle API calls
 async function setupGradioClient() {
     try {
-        const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client@2.3.1/+esm");
+        const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js");
         const client = await Client.connect("AIRI-Institute/HairFastGAN", {
             hf_token: undefined  // Add your HuggingFace token here if needed
         });
