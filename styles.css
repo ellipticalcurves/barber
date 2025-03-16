@@ -1,0 +1,102 @@
+body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-section {
+    flex: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.style-options {
+    flex: 1;
+    padding: 20px;
+    background: #2d2d2d;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.photo-container {
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background: #333;
+}
+
+.photo-container img {
+    max-width: 100%;
+    height: auto;
+}
+
+.hairstyle-preview {
+    margin-bottom: 20px;
+    margin: 20px 0;
+}
+
+.hairstyle-menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.hairstyle-option {
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 2px solid transparent;
+}
+
+.hairstyle-option:hover {
+    transform: scale(1.05);
+}
+
+.hairstyle-option.selected {
+    border-color: #007bff;
+}
+
+.try-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.try-button:hover {
+    background: #0056b3;
+}
+
+h2 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+#outputImage {
+    min-height: 200px;
+    background: #2d2d2d;
+}
+
+#selectedHairstyle {
+    max-height: 300px;
+    object-fit: cover;
+}
