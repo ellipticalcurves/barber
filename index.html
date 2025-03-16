@@ -5,8 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barber Shop</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        
         .container {
             display: flex;
+            flex-direction: column;
             padding: 20px;
             gap: 20px;
             max-width: 1200px;
@@ -14,17 +22,16 @@
         }
 
         .main-section {
-            flex: 2;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
 
         .style-options {
-            flex: 1;
             padding: 20px;
             background: #f5f5f5;
             border-radius: 8px;
+            margin-top: 20px;
         }
 
         .photo-container {
@@ -32,56 +39,74 @@
             border-radius: 8px;
             padding: 10px;
             text-align: center;
+            background: white;
         }
 
         .photo-container img {
             max-width: 100%;
             height: auto;
+            border-radius: 4px;
         }
 
         h2 {
             color: #333;
             margin-bottom: 15px;
         }
-
-        #outputImage {
-            min-height: 200px;
-            background: #eee;
+        
+        h3 {
+            color: #444;
+            margin-top: 0;
+        }
+        
+        .hairstyle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .hairstyle-option {
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 3px solid transparent;
+        }
+        
+        .hairstyle-option:hover {
+            transform: scale(1.05);
+        }
+        
+        .hairstyle-option.selected {
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+        
+        .selected-style {
+            margin: 20px 0;
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .selected-style img {
+            max-width: 200px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 5px;
+        }
+        
+        header {
+            background: #333;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="main-section">
-            <div class="photo-container">
-                <h2>Source Photo</h2>
-                <img src="https://airi-institute-hairfastgan.hf.space/file=/tmp/gradio/dae2c0951aa02520c803eab2ea012d6a72cf0f28/0.png" alt="Source photo">
-            </div>
-            <div class="photo-container">
-                <h2>Result</h2>
-                <img src="/api/placeholder/400/320" alt="Result with new hairstyle">
-            </div>
-        </div>
-
-        <div class="style-options">
-            <h2>Select Target Hairstyle</h2>
-            <div class="hairstyle-grid">
-                <div class="photo-container hairstyle-option">
-                    <img src="7.png" alt="Hairstyle 1">
-                </div>
-                <div class="photo-container hairstyle-option">
-                    <img src="/api/placeholder/200/200" alt="Hairstyle 2">
-                </div>
-                <div class="photo-container hairstyle-option">
-                    <img src="/api/placeholder/200/200" alt="Hairstyle 3">
-                </div>
-                <div class="photo-container hairstyle-option">
-                    <img src="/api/placeholder/200/200" alt="Hairstyle 4">
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- <div class="container">
         <div class="main-section">
             <div class="photo-container">
                 <h2>Source Photo</h2>
@@ -95,39 +120,22 @@
 
         <div class="style-options">
             <h2>Select Target Hairstyle</h2>
-            <div class="photo-container">
-                <img src="https://airi-institute-hairfastgan.hf.space/file=/tmp/gradio/90e42560c5b2e8086c47fe34f0b20599a26abb71/1.png" alt="Target hairstyle">
-                <img src="7.jpg" alt="Target hairstyle">
+            <div class="selected-style">
+                <h3>Selected Hairstyle</h3>
+                <img id="selectedHairstyle" src="https://airi-institute-hairfastgan.hf.space/file=/tmp/gradio/90e42560c5b2e8086c47fe34f0b20599a26abb71/1.png" alt="Selected hairstyle">
             </div>
+            
+            <div class="hairstyle-grid">
+                <div class="photo-container hairstyle-option selected">
+                    <img src="https://airi-institute-hairfastgan.hf.space/file=/tmp/gradio/90e42560c5b2e8086c47fe34f0b20599a26abb71/1.png" alt="Hairstyle 1">
+                </div>
+                <div class="photo-container hairstyle-option">
+                    <img src="7.png" alt="Hairstyle 2">
+                </div>
+            </div>
+            <button class="try-button" id="tryHairstyle">Try This Hairstyle</button>
         </div>
-    </div> -->
-
-    <script type="module">
-        console.log("hello world");
-        import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
-
-        const response_0 = await fetch("https://airi-institute-hairfastgan.hf.space/file=/tmp/gradio/dae2c0951aa02520c803eab2ea012d6a72cf0f28/0.png");
-        const exampleImage0 = await response_0.blob();
-                                
-        const response_1 = await fetch("https://airi-institute-hairfastgan.hf.space/file=/tmp/gradio/90e42560c5b2e8086c47fe34f0b20599a26abb71/1.png");
-        const exampleImage1 = await response_1.blob();
-                                
-        // const response_2 = await fetch("https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png");
-        // const exampleImage2 = await response_2.blob();
-                                
-        const client = await Client.connect("AIRI-Institute/HairFastGAN");
-        const result = await client.predict("/swap_hair", { 
-                        face: exampleImage0, 	// blob in 'Source photo to try on the hairstyle' Image component
-                        shape: exampleImage1, 	// blob in 'Shape photo with desired hairstyle (optional)' Image component
-                        color: null, 	// blob in 'Color photo with desired hair color (optional)' Image component		
-                        blending: "Article", 		
-                        poisson_iters: 0, 		
-                        poisson_erosion: 1, 
-        });
-
-        console.log(result);
-        console.log(result.data);
-        console.log(result.data[0].value.url);
-    </script>
+    </div>
+    <script src="script.js" defer></script>
 </body>
 </html>

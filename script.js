@@ -1,31 +1,25 @@
-import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
+const hairstyleOptions = document.querySelectorAll('.hairstyle-option');
+const selectedHairstyleImg = document.getElementById('selectedHairstyle');
+let selectedHairstyleUrl = selectedHairstyleImg.src;
 
-async function initializeApp() {
-    const hairstyleOptions = document.querySelectorAll('.hairstyle-option');
-    const selectedHairstyleImg = document.getElementById('selectedHairstyle');
-    let selectedHairstyleUrl = '';
-
-    // Set first hairstyle as default
-    if (hairstyleOptions.length > 0) {
-        selectedHairstyleImg.src = hairstyleOptions[0].src;
-        selectedHairstyleUrl = hairstyleOptions[0].src;
-        hairstyleOptions[0].classList.add('selected');
-    }
-
-    // Handle hairstyle selection
-    hairstyleOptions.forEach(option => {
-        option.addEventListener('click', () => {
+// Handle hairstyle selection
+hairstyleOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        const optionImg = option.querySelector('img');
+        if (optionImg && optionImg.src) {
             hairstyleOptions.forEach(opt => opt.classList.remove('selected'));
             option.classList.add('selected');
-            selectedHairstyleImg.src = option.src;
-            selectedHairstyleUrl = option.src;
-        });
+            selectedHairstyleImg.src = optionImg.src;
+            selectedHairstyleUrl = optionImg.src;
+        }
     });
+});
 
-    // Initialize client
+// Initialize gradio client and handle API calls
+async function setupGradioClient() {
+    const { Client } = await import("https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js");
     const client = await Client.connect("AIRI-Institute/HairFastGAN");
-
-    // Handle try hairstyle button click
+    
     document.getElementById('tryHairstyle').addEventListener('click', async () => {
         try {
             const sourceResponse = await fetch("https://airi-institute-hairfastgan.hf.space/file=/tmp/gradio/dae2c0951aa02520c803eab2ea012d6a72cf0f28/0.png");
@@ -50,5 +44,5 @@ async function initializeApp() {
     });
 }
 
-// Initialize the application
-initializeApp();
+// Initialize everything
+setupGradioClient().catch(console.error);
